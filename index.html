@@ -5,24 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MicroLearn - AI-Powered Micro Learning</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.1">
 </head>
 <body>
     <div id="app">
         <!-- Header -->
         <header class="header">
             <h1>MicroLearn</h1>
-            <nav class="nav">
-                <button id="dashboardBtn" class="nav-btn active">📊</button>
-                <button id="knowledgeBtn" class="nav-btn">🧠</button>
-                <button id="settingsBtn" class="nav-btn">⚙️</button>
-            </nav>
+        <nav class="nav">
+            <button id="dashboardBtn" class="nav-btn active">📊</button>
+            <button id="knowledgeBtn" class="nav-btn">🧠</button>
+            <button id="settingsBtn" class="nav-btn">⚙️</button>
+            <button id="adminBtn" class="nav-btn">🔧</button>
+        </nav>
         </header>
 
         <!-- Main Content -->
         <main class="main">
+            <!-- Login View -->
+            <div id="login" class="view active">
+                <div class="login-container">
+                    <div class="login-header">
+                        <h1>Welcome to MicroLearn</h1>
+                        <p>Your AI-powered micro-learning companion</p>
+                    </div>
+                    
+                    <div class="login-content">
+                        <div class="login-form">
+                            <h2 id="formTitle">Sign In</h2>
+                            <div class="form-group">
+                                <label for="userEmail">Email</label>
+                                <input type="email" id="userEmail" placeholder="Enter your email">
+                            </div>
+                            <div class="form-group">
+                                <label for="userName">Your Name</label>
+                                <input type="text" id="userName" placeholder="Enter your name">
+                            </div>
+                            <button id="loginUser" class="btn-primary">Sign In</button>
+                            <button id="registerUser" class="btn-secondary" style="display: none;">Register</button>
+                            <p class="login-note">
+                                <span id="loginNote">Don't have an account? </span>
+                                <a href="#" id="toggleForm">Register here</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Setup/Onboarding View -->
+            <div id="setup" class="view">
+                <div class="setup-container">
+                    <div class="setup-header">
+                        <h1>Let's Get Started</h1>
+                        <p>Tell us what you'd like to learn about</p>
+                    </div>
+                    
+                    <div class="setup-content">
+                        <div class="setup-step">
+                            <h2>What would you like to learn about?</h2>
+                            <p>Tell us what interests you and we'll create personalized lessons just for you.</p>
+                            
+                            <div class="interest-input-container">
+                                <textarea 
+                                    id="setupInterests" 
+                                    placeholder="For example: JavaScript programming, cooking techniques, machine learning, photography, etc."
+                                    rows="4"
+                                ></textarea>
+                                <button id="startLearning" class="btn-primary">Start Learning</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Dashboard View -->
-            <div id="dashboard" class="view active">
+            <div id="dashboard" class="view">
                 <div class="stats">
                     <div class="stat-card">
                         <h3>Learning Streak</h3>
@@ -51,12 +108,54 @@
             <!-- Settings View -->
             <div id="settings" class="view">
                 <h2>Settings</h2>
-                
-                <div class="setting-group">
+
+                <!-- Registration Section -->
+                <div id="registrationSection" class="setting-group">
+                    <h3>Get Started</h3>
+                    <p>Register to start your personalized learning journey!</p>
+                    <div class="registration-form">
+                        <div class="form-group">
+                            <label for="regInterests">What are you interested in learning?</label>
+                            <div class="interest-tags">
+                                <input type="text" id="regInterestInput" placeholder="Add an interest (e.g., JavaScript, Cooking)">
+                                <button id="addRegInterest">Add</button>
+                            </div>
+                            <div id="regInterestList" class="tag-list">
+                                <!-- Registration interests will be displayed here -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="regFrequency">How often would you like to learn?</label>
+                            <select id="regFrequency">
+                                <option value="1">1 lesson per day</option>
+                                <option value="2">2 lessons per day</option>
+                                <option value="3" selected>3 lessons per day</option>
+                                <option value="5">5 lessons per day</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="regGranularity">Learning Detail Level</label>
+                            <select id="regGranularity">
+                                <option value="auto" selected>AI Assessed (Recommended)</option>
+                                <option value="low">Low (General concepts)</option>
+                                <option value="medium">Medium (Balanced)</option>
+                                <option value="high">High (Detailed tips & techniques)</option>
+                            </select>
+                        </div>
+                        
+                        <button id="registerUser" class="btn-primary">Start Learning</button>
+                    </div>
+                </div>
+
+                <!-- Settings Section (hidden until registered) -->
+                <div id="settingsSection" class="setting-group" style="display: none;">
                     <h3>Learning Interests</h3>
                     <div class="interest-tags">
                         <input type="text" id="interestInput" placeholder="Add an interest (e.g., JavaScript, Cooking)">
                         <button id="addInterest">Add</button>
+                        <button id="addTopicsAI" class="btn-secondary">Add Topics with AI</button>
                     </div>
                     <div id="interestList" class="tag-list">
                         <!-- User interests will be displayed here -->
@@ -84,6 +183,119 @@
                 </div>
 
                 <button id="saveSettings" class="btn-primary">Save Settings</button>
+            </div>
+
+            <!-- AI Topic Analysis Panel (hidden by default) -->
+            <div id="aiTopicPanel" class="view" style="display: none;">
+                <div class="ai-panel-container">
+                    <div class="ai-panel-header">
+                        <h2>AI Topic Analysis</h2>
+                        <p>Tell us what you'd like to learn about and we'll analyze your interests</p>
+                        <button id="closeAIPanel" class="btn-secondary">← Back to Settings</button>
+                    </div>
+                    
+                    <div class="ai-panel-content">
+                        <div class="ai-analysis-step">
+                            <h3>What would you like to learn about?</h3>
+                            <p>Describe your learning interests and we'll use AI to analyze and categorize them.</p>
+                            
+                            <div class="ai-interest-input-container">
+                                <textarea 
+                                    id="aiTopicInterests" 
+                                    placeholder="For example: I want to learn JavaScript programming, cooking techniques, machine learning, photography, etc."
+                                    rows="4"
+                                ></textarea>
+                                <button id="analyzeTopics" class="btn-primary">Analyze Topics</button>
+                            </div>
+                            
+                            <div id="aiAnalysisResult" class="analysis-result" style="display: none;">
+                                <h4>Analysis Results</h4>
+                                <div id="aiAnalysisContent"></div>
+                                <button id="applyAnalysis" class="btn-primary" style="display: none;">Apply to My Interests</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel View -->
+            <div id="admin" class="view">
+                <h2>Admin Panel</h2>
+                
+                <div class="admin-section">
+                    <h3>API Endpoints</h3>
+                    <div class="endpoint-grid">
+                        <div class="endpoint-card">
+                            <h4>AI Test</h4>
+                            <p>Test AI connection</p>
+                            <button id="testAI" class="btn-primary">Test AI</button>
+                            <div id="aiTestResult" class="result-box"></div>
+                        </div>
+                        
+                        <div class="endpoint-card">
+                            <h4>Memory Stats</h4>
+                            <p>View AI memory statistics</p>
+                            <button id="getMemoryStats" class="btn-primary">Get Stats</button>
+                            <div id="memoryStatsResult" class="result-box"></div>
+                        </div>
+                        
+                        <div class="endpoint-card">
+                            <h4>Lesson Request</h4>
+                            <p>Generate a lesson</p>
+                            <button id="requestLessonAdmin" class="btn-primary">Get Lesson</button>
+                            <div id="lessonResult" class="result-box"></div>
+                        </div>
+                        
+                        <div class="endpoint-card">
+                            <h4>User Data</h4>
+                            <p>View detailed user profile data</p>
+                            <div class="user-data-management">
+                                <select id="userDataSelect" class="user-select">
+                                    <option value="">Select a user...</option>
+                                </select>
+                                <button id="loadUsersForData" class="btn-secondary">Load Users</button>
+                                <button id="getUserData" class="btn-primary" disabled>View User Data</button>
+                            </div>
+                            <div id="userDataResult" class="result-box"></div>
+                        </div>
+                        
+                        <div class="endpoint-card">
+                            <h4>Clear Memory</h4>
+                            <p>Clear all AI memory</p>
+                            <button id="clearAllMemory" class="btn-danger">Clear All</button>
+                            <div id="clearMemoryResult" class="result-box"></div>
+                        </div>
+                        
+                        <div class="endpoint-card">
+                            <h4>Clear Cache</h4>
+                            <p>Clear browser cache and localStorage</p>
+                            <button id="clearBrowserCache" class="btn-warning">Clear Cache</button>
+                            <div id="clearCacheResult" class="result-box"></div>
+                        </div>
+                        
+                        <div class="endpoint-card">
+                            <h4>AI Input Debug</h4>
+                            <p>View what data is sent to AI for lesson generation</p>
+                            <button id="debugAIInput" class="btn-secondary">Show AI Input</button>
+                            <div id="aiInputResult" class="result-box large-text-area"></div>
+                        </div>
+                        
+                        <div class="endpoint-card">
+                            <h4>User Management</h4>
+                            <p>Manage users and their data</p>
+                            <div class="user-management">
+                                <select id="userSelect" class="user-select">
+                                    <option value="">Select a user...</option>
+                                </select>
+                                <button id="loadUsers" class="btn-secondary">Load Users</button>
+                                <button id="viewUserData" class="btn-primary" disabled>View User Data</button>
+                                <button id="deleteUserData" class="btn-danger" disabled>Delete User Data</button>
+                            </div>
+                            <div id="userManagementResult" class="result-box"></div>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
 
             <!-- Knowledge Profile View -->
@@ -127,6 +339,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=1.1"></script>
 </body>
 </html>

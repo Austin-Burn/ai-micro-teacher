@@ -559,6 +559,262 @@ select:focus {
     background: #4b5563;
 }
 
+/* Login Styles */
+.login-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.login-header h1 {
+    font-size: 2.5rem;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.login-header p {
+    font-size: 1.2rem;
+    color: #64748b;
+    margin-bottom: 3rem;
+}
+
+.login-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.login-form h2 {
+    color: #1e293b;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.login-note {
+    margin-top: 1rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* Setup/Onboarding Styles */
+.setup-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.setup-header h1 {
+    font-size: 2.5rem;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.setup-header p {
+    font-size: 1.2rem;
+    color: #64748b;
+    margin-bottom: 3rem;
+}
+
+.setup-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.setup-step h2 {
+    color: #1e293b;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.setup-step p {
+    color: #64748b;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.interest-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+#setupInterests {
+    width: 100%;
+    max-width: 500px;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.2s;
+}
+
+#setupInterests:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+#setupInterests::placeholder {
+    color: #94a3b8;
+}
+
+/* Admin Panel Styles */
+.admin-section {
+    margin-bottom: 2rem;
+}
+
+.endpoint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.endpoint-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.endpoint-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1e293b;
+    font-size: 1.1rem;
+}
+
+.endpoint-card p {
+    margin: 0 0 1rem 0;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.result-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.result-box.success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.result-box.error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+}
+
+/* User Management Styles */
+.user-management {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.user-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    background: white;
+}
+
+.user-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.user-management button {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.user-management button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Notification Styles */
 .notification-card {
     background: white;
@@ -614,4 +870,302 @@ select:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* User Data Viewer Styles */
+.user-data-viewer {
+    margin-top: 1rem;
+}
+
+.user-data-content {
+    max-height: 400px;
+    overflow-y: auto;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+/* Responsive spacing for user data display */
+.user-data-details h3 {
+    margin: 0.3rem 0 0.15rem 0;
+    color: #1e293b;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.15rem;
+    font-size: 0.95rem;
+}
+
+.user-data-details h3:first-child {
+    margin-top: 0;
+}
+
+.user-info p {
+    margin: 0.15rem 0;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+.interests-list ul {
+    margin: 0.3rem 0;
+    padding-left: 1.2rem;
+}
+
+.interests-list li {
+    margin: 0.15rem 0;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+.knowledge-profile {
+    margin: 0.3rem 0;
+}
+
+.topic-section {
+    margin: 0.3rem 0;
+    padding: 0.3rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 3px;
+}
+
+.topic-section h4 {
+    margin: 0 0 0.3rem 0;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.concept-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0.15rem 0;
+    padding: 0.2rem;
+    background: #f8fafc;
+    border-radius: 3px;
+    font-size: 0.85rem;
+}
+
+/* Desktop: Use vh units for better spacing control */
+@media (min-width: 1024px) {
+    .user-data-details h3 {
+        margin: 0.2vh 0 0.1vh 0;
+        font-size: 0.9rem;
+    }
+    
+    .user-info p {
+        margin: 0.1vh 0;
+        font-size: 0.85rem;
+    }
+    
+    .interests-list ul {
+        margin: 0.2vh 0;
+        padding-left: 1rem;
+    }
+    
+    .interests-list li {
+        margin: 0.1vh 0;
+        font-size: 0.85rem;
+    }
+    
+    .topic-section {
+        margin: 0.2vh 0;
+        padding: 0.2vh 0.3rem;
+    }
+    
+    .topic-section h4 {
+        margin: 0 0 0.2vh 0;
+        font-size: 0.85rem;
+    }
+    
+    .concept-item {
+        gap: 0.2rem;
+        margin: 0.1vh 0;
+        padding: 0.15rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Mobile: Use vw units for responsive spacing */
+@media (max-width: 768px) {
+    .user-data-details h3 {
+        margin: 0.3vw 0 0.15vw 0;
+        font-size: 0.9rem;
+    }
+    
+    .user-info p {
+        margin: 0.15vw 0;
+        font-size: 0.85rem;
+    }
+    
+    .interests-list ul {
+        margin: 0.3vw 0;
+        padding-left: 1rem;
+    }
+    
+    .interests-list li {
+        margin: 0.15vw 0;
+        font-size: 0.85rem;
+    }
+    
+    .topic-section {
+        margin: 0.3vw 0;
+        padding: 0.3vw 0.4rem;
+    }
+    
+    .topic-section h4 {
+        margin: 0 0 0.3vw 0;
+        font-size: 0.85rem;
+    }
+    
+    .concept-item {
+        gap: 0.3rem;
+        margin: 0.15vw 0;
+        padding: 0.2rem;
+        font-size: 0.8rem;
+    }
+}
+
+.concept-item strong {
+    color: #1e293b;
+}
+
+.proficiency, .confidence, .last-practiced {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.learning-history {
+    margin: 0.5rem 0;
+}
+
+.history-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.history-item strong {
+    color: #1e293b;
+}
+
+.score, .timestamp {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.preferences p {
+    margin: 0.25rem 0;
+    color: #374151;
+}
+
+/* AI Topic Analysis Panel */
+.ai-panel-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.ai-panel-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.ai-panel-header h2 {
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.ai-panel-header p {
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.ai-analysis-step {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.ai-interest-input-container {
+    margin-top: 1rem;
+}
+
+.ai-interest-input-container textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 120px;
+    margin-bottom: 1rem;
+}
+
+.ai-interest-input-container textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.analysis-result {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.analysis-result h4 {
+    color: #1e293b;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+}
+
+.analysis-categories h5 {
+    color: #374151;
+    margin: 1rem 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.analysis-categories ul {
+    margin: 0.5rem 0 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.analysis-categories li {
+    margin: 0.5rem 0;
+    color: #4b5563;
+}
+
+.analysis-categories strong {
+    color: #1e293b;
+}
+
+.error {
+    color: #dc2626;
+    font-weight: 500;
+}
+
+/* Large text area for admin panel */
+.large-text-area {
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 1rem;
+    border-radius: 4px;
 }

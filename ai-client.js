@@ -1,13 +1,158 @@
 // AI Client for LM Studio Integration
 const axios = require('axios');
-const { TopicDecisionEngine } = require('./topic-hierarchy');
+const { AITopicFramework } = require('./ai-topic-framework');
 
 class AIClient {
     constructor() {
         this.baseURL = 'http://127.0.0.1:1234/v1/chat/completions';
         this.conversationMemory = new Map(); // Simple memory for MVP
-        this.topicEngine = new TopicDecisionEngine(); // Hierarchical topic system
+        this.topicFramework = new AITopicFramework(); // Flexible AI-driven topic system
         this.maxMemorySize = 20; // Maximum conversation exchanges per user
+    }
+
+    // AI-powered interest analysis
+    async analyzeUserInterests(rawInput, userProfile = {}) {
+        const prompt = `You are an AI learning analyst. Analyze this user's learning interests and return ONLY a valid JSON response.
+
+User Input: "${rawInput}"
+
+User Profile Data: ${JSON.stringify(userProfile)}
+
+CRITICAL: You MUST return ONLY valid JSON. No explanations, no markdown, no additional text. Just the JSON object.
+
+Analyze the user's input for:
+1. Learning topics and subjects mentioned (including programming languages, frameworks, tools, concepts)
+2. Confidence level and enthusiasm indicators  
+3. Priority levels (main focus vs side interests)
+4. Difficulty hints and skill level indicators
+
+IMPORTANT: Extract ALL topics mentioned, including:
+- Programming languages (JavaScript, Python, Rust, etc.)
+- Frameworks and tools (React, Vue, Django, etc.)
+- Concepts and skills (machine learning, web development, etc.)
+- Any other learning areas mentioned
+
+Return this exact JSON structure:
+{
+  "analysis": {
+    "overallTone": "confident|uncertain|enthusiastic|hesitant",
+    "confidenceLevel": 50,
+    "learningStyle": "structured|exploratory|practical|theoretical",
+    "learningProportions": {
+      "primaryFocus": "main learning area",
+      "secondaryAreas": ["side interest 1", "side interest 2"],
+      "learningRatio": "e.g., 70% primary, 30% secondary"
+    }
+  },
+  "categories": [
+    {
+      "name": "Programming Languages",
+      "topics": ["JavaScript", "Python", "Rust"],
+      "difficulty": 50,
+      "confidence": 50,
+      "priority": "primary|secondary|tertiary",
+      "proportion": 50,
+      "frequency": "daily|weekly|occasionally",
+      "reasoning": "Why this difficulty/confidence/priority level"
+    },
+    {
+      "name": "Web Development",
+      "topics": ["React", "Vue", "Django"],
+      "difficulty": 50,
+      "confidence": 50,
+      "priority": "primary|secondary|tertiary",
+      "proportion": 50,
+      "frequency": "daily|weekly|occasionally",
+      "reasoning": "Why this difficulty/confidence/priority level"
+    }
+  ],
+  "recommendations": {
+    "startingPoint": "suggested first topic",
+    "learningPath": "recommended progression",
+    "focusAreas": ["area1", "area2"],
+    "learningSchedule": {
+      "primaryFocus": "focus description",
+      "secondaryAreas": "secondary description",
+      "balance": "balance description"
+    }
+  }
+}
+
+Remember: Return ONLY the JSON object, nothing else.`;
+
+        const response = await this.generateResponse(prompt, 'system', { 
+            interests: rawInput,
+            userProfile: userProfile 
+        });
+        
+        try {
+            // Try to extract JSON from the response if it's wrapped in text
+            let jsonResponse = response.trim();
+            
+            // Remove any markdown code blocks
+            if (jsonResponse.includes('```json')) {
+                jsonResponse = jsonResponse.split('```json')[1].split('```')[0].trim();
+            } else if (jsonResponse.includes('```')) {
+                jsonResponse = jsonResponse.split('```')[1].split('```')[0].trim();
+            }
+            
+            // Try to find JSON object in the response
+            const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                jsonResponse = jsonMatch[0];
+            }
+            
+            return JSON.parse(jsonResponse);
+        } catch (error) {
+            console.error('Failed to parse AI interest analysis:', error);
+            console.error('AI Response was:', response);
+            // Fallback to basic parsing
+            return this.fallbackInterestAnalysis(rawInput);
+        }
+    }
+    
+    fallbackInterestAnalysis(rawInput) {
+        // Improved fallback that still uses AI but with simpler prompt
+        console.log('Using fallback analysis for:', rawInput);
+        
+        // Extract basic interests from input
+        const interests = rawInput.split(/[,;.\n\r]+/)
+            .map(i => i.trim())
+            .filter(i => i.length > 0)
+            .slice(0, 5); // Limit to 5 interests max
+        
+        return {
+            analysis: {
+                overallTone: "neutral",
+                confidenceLevel: 50,
+                learningStyle: "exploratory",
+                learningProportions: {
+                    primaryFocus: interests[0] || "General Learning",
+                    secondaryAreas: interests.slice(1),
+                    learningRatio: "Equal focus on all areas"
+                }
+            },
+            categories: interests.map((interest, index) => ({
+                name: interest,
+                topics: [interest],
+                difficulty: 50,
+                confidence: 50,
+                priority: index === 0 ? "primary" : "secondary",
+                proportion: Math.max(20, 100 - (index * 20)),
+                frequency: index === 0 ? "daily" : "weekly",
+                reasoning: "Fallback analysis - AI parsing failed"
+            })),
+            recommendations: {
+                startingPoint: interests[0] || "General Learning",
+                learningPath: "Begin with basics",
+                focusAreas: interests.slice(0, 3),
+                learningSchedule: {
+                    primaryFocus: "Focus daily on main interest",
+                    secondaryAreas: "Include weekly variety",
+                    balance: "Balanced learning approach"
+                }
+            }
+        };
     }
 
     // Memory cache control methods
@@ -69,7 +214,7 @@ class AIClient {
                     content: `You are a personalized micro-learning AI assistant. You help users learn through bite-sized, interactive content. 
                     
                     User Context:
-                    - Interests: ${context.interests ? context.interests.join(', ') : 'Not specified'}
+                    - Interests: ${Array.isArray(context.interests) ? context.interests.join(', ') : (context.interests || 'Not specified')}
                     - Learning Level: ${context.difficulty || 'Beginner'}
                     - Current Topic: ${context.topic || 'General'}
                     
@@ -211,9 +356,11 @@ class AIClient {
     async generateEscalatedContent(userId, topic, concept, currentDifficultyPercentage) {
         const escalatedDifficulty = Math.min(currentDifficultyPercentage + 25, 100); // Increase by 25% up to 100%
         
-        // Use hierarchical system to determine escalated content
-        const topicPath = this.topicEngine.getTopicPath(topic, concept);
-        const escalatedContent = this.topicEngine.getContentForLevel(topicPath, 'Advanced');
+        // Get user profile for AI decision making
+        const userProfile = await this.getUserProfile(userId);
+        
+        // AI determines escalated content based on user profile
+        const recommendedContent = await this.topicFramework.getRecommendedContent(userProfile, [topic], topic);
         
         const prompt = `The user found the previous content too easy and has mastered the basic concept. Generate more challenging content for:
         
@@ -286,20 +433,34 @@ class AIClient {
     async generatePersonalizedLesson(userId, userData) {
         const { interests, knowledgeProfile, preferences } = userData;
         
-        // Use hierarchical system to determine what to teach
-        const recommendedContent = this.topicEngine.getRecommendedContent(userData, interests[0], 'Variables');
+        console.log('AI Lesson Generation - User Data:', {
+            userId,
+            interests,
+            knowledgeProfile,
+            preferences
+        });
         
-        // Check if user should learn concept in new language
-        const languageDecision = this.topicEngine.shouldLearnInNewLanguage(userData, 'Variables', 'JavaScript');
+        // Check if user has interests
+        if (!interests || interests.length === 0) {
+            throw new Error('User has no learning interests. Please add interests in settings first.');
+        }
+        
+        // Use hierarchical system to determine what to teach
+        const recommendedContent = await this.topicFramework.getRecommendedContent(userData, interests, null);
+        
+        // Check if user should learn concept in new context
+        const contextDecision = await this.topicFramework.shouldLearnInNewContext(userData, recommendedContent.recommendedConcept || 'basics', 'new context');
         
         const prompt = `Generate a personalized micro-learning lesson based on the user's profile:
         
-        User Interests: ${interests.join(', ')}
+        User Interests: ${Array.isArray(interests) ? interests.join(', ') : (interests || 'Not specified')}
         Knowledge Profile: ${JSON.stringify(knowledgeProfile)}
         Preferences: ${JSON.stringify(preferences)}
         
-        Recommended Content: ${JSON.stringify(recommendedContent)}
-        Language Decision: ${JSON.stringify(languageDecision)}
+        AI Recommendation: ${JSON.stringify(recommendedContent)}
+        Context Decision: ${JSON.stringify(contextDecision)}
+        
+        CRITICAL: Focus ONLY on the user's specific interests: ${Array.isArray(interests) ? interests.join(', ') : 'None specified'}
         
         IMPORTANT: Use the hierarchical topic system to determine content:
         - If user knows concept in other languages: Focus on SYNTAX differences
@@ -307,10 +468,14 @@ class AIClient {
         - Respect difficulty percentages: ${preferences.difficulty}% means ${this.getDifficultyDescription(preferences.difficulty)}
         
         Generate a lesson that:
+        - Focuses specifically on ONE of the user's interests: ${Array.isArray(interests) ? interests.join(', ') : 'None specified'}
         - Builds on their existing knowledge appropriately
         - Uses the correct approach (syntactic vs conceptual)
         - Matches their difficulty level exactly
         - Is engaging and bite-sized
+        - NEVER generates generic "core skills" content - only content related to their specific interests
+        
+        CRITICAL: Return ONLY valid JSON. No explanations, no markdown, no additional text.
         
         Format as JSON with:
         - content: The lesson content (1-2 sentences)
@@ -318,9 +483,23 @@ class AIClient {
         - topic: The subject area
         - concept: The specific concept being taught
         - difficulty: ${preferences.difficulty} (percentage 0-100)
-        - if quiz: include options array, correctAnswer index, AND correctAnswer text
-        - correctAnswer: The actual correct answer text (for immediate feedback)
-        - reasoning: Why this lesson was chosen for this user`;
+        - if quiz: include complete options array with 4 valid options, correctAnswer index (0-3), AND correctAnswerText
+        - correctAnswer: The index number (0-3) of the correct option
+        - correctAnswerText: The actual correct answer text
+        - reasoning: Why this lesson was chosen for this user
+        
+        Example quiz format:
+        {
+          "content": "What is the correct HTML tag for a paragraph?",
+          "type": "quiz",
+          "topic": "HTML Basics",
+          "concept": "HTML Elements",
+          "difficulty": 50,
+          "options": ["<p>", "<para>", "<paragraph>", "<text>"],
+          "correctAnswer": 0,
+          "correctAnswerText": "<p>",
+          "reasoning": "Basic HTML knowledge for web development"
+        }`;
         
         const response = await this.generateResponse(prompt, userId, { 
             interests, 
@@ -328,15 +507,41 @@ class AIClient {
         });
         
         try {
-            return JSON.parse(response);
-        } catch {
+            // Clean the response to extract JSON
+            let jsonResponse = response.trim();
+            
+            // Remove any markdown code blocks
+            if (jsonResponse.includes('```json')) {
+                jsonResponse = jsonResponse.split('```json')[1].split('```')[0].trim();
+            } else if (jsonResponse.includes('```')) {
+                jsonResponse = jsonResponse.split('```')[1].split('```')[0].trim();
+            }
+            
+            // Find JSON object in the response
+            const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                jsonResponse = jsonMatch[0];
+            }
+            
+            const parsed = JSON.parse(jsonResponse);
+            
+            // Validate required fields
+            if (!parsed.content || !parsed.type) {
+                throw new Error('Invalid lesson format');
+            }
+            
+            return parsed;
+        } catch (error) {
+            console.error('Failed to parse AI lesson response:', error);
+            console.error('Raw response:', response);
+            
             return {
-                content: response,
+                content: "I'm having trouble generating a lesson right now. Please try again.",
                 type: "info",
                 topic: interests[0] || "General",
                 concept: "Learning",
                 difficulty: preferences.difficulty || 50,
-                reasoning: "AI-generated lesson"
+                reasoning: "Fallback due to parsing error"
             };
         }
     }

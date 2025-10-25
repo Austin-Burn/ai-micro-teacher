@@ -2,9 +2,10 @@
 const AIClient = require('./ai-client');
 
 class AIRoutes {
-    constructor(app, aiClient) {
+    constructor(app, aiClient, db) {
         this.app = app;
         this.aiClient = aiClient;
+        this.db = db;
         this.setupRoutes();
     }
 
@@ -111,8 +112,21 @@ class AIRoutes {
             }
         });
 
-        // Memory cache control endpoints
-        this.app.get('/api/ai/memory/stats', async (req, res) => {
+    // AI interest analysis endpoint
+    this.app.post('/api/ai/analyze-interests', async (req, res) => {
+        const { rawInput, userProfile } = req.body;
+        
+        try {
+            const analysis = await this.aiClient.analyzeUserInterests(rawInput, userProfile || {});
+            res.json({ success: true, analysis: analysis });
+        } catch (error) {
+            console.error('Interest Analysis Error:', error);
+            res.status(500).json({ error: 'Failed to analyze interests' });
+        }
+    });
+
+    // Memory cache control endpoints
+    this.app.get('/api/ai/memory/stats', async (req, res) => {
             try {
                 const stats = this.aiClient.getMemoryStats();
                 res.json({ success: true, stats: stats });
@@ -164,25 +178,79 @@ class AIRoutes {
 
     // Helper method to get user data from database
     async getUserData(userId) {
-        // This would query the database for user's knowledge profile, interests, etc.
-        // For MVP, return mock data
-        return {
-            interests: ['JavaScript', 'Cooking'],
-            knowledgeProfile: {
-                'JavaScript': {
-                    'Variables': { proficiency: 2, confidence: 0.8 },
-                    'Functions': { proficiency: 1, confidence: 0.6 }
-                },
-                'Cooking': {
-                    'Knife Skills': { proficiency: 1, confidence: 0.7 }
+        return new Promise((resolve, reject) => {
+            // Get user data from database
+            this.db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
+                if (err) {
+                    console.error('Database error:', err);
+                    return reject(err);
                 }
-            },
-            learningHistory: [],
-            preferences: {
-                difficulty: 50,
-                granularity: 'auto'
-            }
-        };
+                
+                if (!user) {
+                    return reject(new Error('User not found'));
+                }
+                
+                // Parse interests from JSON string
+                let interests = [];
+                try {
+                    interests = user.interests ? JSON.parse(user.interests) : [];
+                } catch (e) {
+                    console.error('Error parsing interests:', e);
+                }
+                
+                // Get knowledge profile for this user
+                this.db.all('SELECT * FROM knowledge_profile WHERE user_id = ?', [userId], (err, knowledgeRows) => {
+                    if (err) {
+                        console.error('Database error:', err);
+                        return reject(err);
+                    }
+                    
+                    // Format knowledge profile
+                    const knowledgeProfile = {};
+                    knowledgeRows.forEach(row => {
+                        if (!knowledgeProfile[row.topic]) {
+                            knowledgeProfile[row.topic] = {};
+                        }
+                        knowledgeProfile[row.topic][row.concept] = {
+                            proficiency: row.proficiency_level,
+                            confidence: row.confidence_score,
+                            lastPracticed: row.last_practiced
+                        };
+                    });
+                    
+                    // Get learning history
+                    this.db.all(`
+                        SELECT p.*, c.topic, c.content, c.type 
+                        FROM progress p 
+                        JOIN content c ON p.content_id = c.id 
+                        WHERE p.user_id = ? 
+                        ORDER BY p.timestamp DESC 
+                        LIMIT 10
+                    `, [userId], (err, historyRows) => {
+                        if (err) {
+                            console.error('Database error:', err);
+                            return reject(err);
+                        }
+                        
+                        const userData = {
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            interests: interests,
+                            knowledgeProfile: knowledgeProfile,
+                            learningHistory: historyRows,
+                            preferences: {
+                                difficulty: 50, // Default for now
+                                granularity: user.granularity || 'auto'
+                            },
+                            createdAt: user.created_at
+                        };
+                        
+                        resolve(userData);
+                    });
+                });
+            });
+        });
     }
 }
 
