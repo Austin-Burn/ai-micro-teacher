@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroLearn - AI-Powered Micro Learning</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <h1>MicroLearn</h1>
+            <nav class="nav">
+                <button id="dashboardBtn" class="nav-btn active">📊</button>
+                <button id="knowledgeBtn" class="nav-btn">🧠</button>
+                <button id="settingsBtn" class="nav-btn">⚙️</button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Dashboard View -->
+            <div id="dashboard" class="view active">
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3>Learning Streak</h3>
+                        <span id="streakCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today's Lessons</h3>
+                        <span id="todayCount">0</span>
+                    </div>
+                </div>
+                
+                <div class="lesson-request">
+                    <h3>Get Your Next Lesson</h3>
+                    <p>AI will analyze your profile and create a personalized lesson just for you.</p>
+                    <button id="requestLesson" class="btn-primary">Get Lesson</button>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Learning</h3>
+                    <div id="recentLessons" class="lesson-list">
+                        <!-- Recent lessons will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings" class="view">
+                <h2>Settings</h2>
+                
+                <div class="setting-group">
+                    <h3>Learning Interests</h3>
+                    <div class="interest-tags">
+                        <input type="text" id="interestInput" placeholder="Add an interest (e.g., JavaScript, Cooking)">
+                        <button id="addInterest">Add</button>
+                    </div>
+                    <div id="interestList" class="tag-list">
+                        <!-- User interests will be displayed here -->
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Notification Frequency</h3>
+                    <select id="notificationFrequency">
+                        <option value="1">1 per day</option>
+                        <option value="2">2 per day</option>
+                        <option value="3" selected>3 per day</option>
+                        <option value="5">5 per day</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Learning Granularity</h3>
+                    <select id="learningGranularity">
+                        <option value="auto" selected>AI Assessed (Recommended)</option>
+                        <option value="low">Low (General concepts)</option>
+                        <option value="medium">Medium (Balanced)</option>
+                        <option value="high">High (Detailed tips & techniques)</option>
+                    </select>
+                </div>
+
+                <button id="saveSettings" class="btn-primary">Save Settings</button>
+            </div>
+
+            <!-- Knowledge Profile View -->
+            <div id="knowledge" class="view">
+                <h2>Knowledge Profile</h2>
+                
+                <div class="knowledge-stats">
+                    <div class="stat-card">
+                        <h3>Topics Learning</h3>
+                        <span id="topicCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Concepts Mastered</h3>
+                        <span id="conceptCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average Proficiency</h3>
+                        <span id="avgProficiency">0%</span>
+                    </div>
+                </div>
+
+                <div class="knowledge-topics">
+                    <h3>Your Learning Progress</h3>
+                    <div id="knowledgeTopics" class="topic-list">
+                        <!-- Knowledge topics will be populated here -->
+                    </div>
+                </div>
+
+                <div class="knowledge-assessment">
+                    <h3>Quick Assessment</h3>
+                    <p>Test your knowledge to get personalized recommendations</p>
+                    <button id="startAssessment" class="btn-primary">Start Assessment</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Notification Permission Banner -->
+        <div id="permissionBanner" class="banner">
+            <p>Enable notifications to receive your personalized micro-lessons!</p>
+            <button id="enableNotifications" class="btn-primary">Enable Notifications</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
